@@ -3,117 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enviar Mensaje</title>
+<title>Instalación Interactiva</title>
 
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:Arial, sans-serif;
 
-    background:linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b,
-        #0f172a
-    );
+  height:100vh;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-family:Arial, sans-serif;
+
+  background:
+  linear-gradient(
+    135deg,
+    #0f172a,
+    #1e293b,
+    #0f172a
+  );
 }
 
 .contenedor{
 
-    width:90%;
-    max-width:600px;
+  width:90%;
+  max-width:650px;
 
-    padding:35px;
+  padding:40px;
 
-    border-radius:25px;
+  border-radius:30px;
 
-    background:rgba(255,255,255,0.08);
+  background:rgba(255,255,255,.08);
 
-    backdrop-filter:blur(15px);
+  backdrop-filter:blur(20px);
 
-    border:1px solid rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,.15);
 
-    box-shadow:
-    0 15px 50px rgba(0,0,0,.4);
+  box-shadow:
+  0 20px 60px rgba(0,0,0,.5);
 
-    color:white;
+  color:white;
 }
 
 h1{
-    text-align:center;
-    margin-bottom:10px;
+
+  text-align:center;
+
+  margin-bottom:10px;
+
+  font-size:36px;
 }
 
 p{
-    text-align:center;
-    opacity:.8;
-    margin-bottom:25px;
+
+  text-align:center;
+
+  margin-bottom:25px;
+
+  opacity:.75;
 }
 
 textarea{
 
-    width:100%;
-    height:180px;
+  width:100%;
 
-    resize:none;
+  height:200px;
 
-    border:none;
+  resize:none;
 
-    border-radius:15px;
+  border:none;
 
-    padding:20px;
+  outline:none;
 
-    font-size:20px;
+  border-radius:20px;
 
-    background:rgba(255,255,255,0.1);
+  padding:20px;
 
-    color:white;
+  font-size:20px;
 
-    outline:none;
+  background:rgba(255,255,255,.1);
+
+  color:white;
 }
 
 textarea::placeholder{
-    color:rgba(255,255,255,0.5);
+
+  color:rgba(255,255,255,.4);
 }
 
 button{
 
-    width:100%;
+  width:100%;
 
-    margin-top:20px;
+  margin-top:20px;
 
-    padding:18px;
+  padding:18px;
 
-    border:none;
+  border:none;
 
-    border-radius:15px;
+  border-radius:20px;
 
-    font-size:20px;
+  font-size:20px;
 
-    cursor:pointer;
+  cursor:pointer;
 
-    background:#8b5cf6;
+  background:#8b5cf6;
 
-    color:white;
+  color:white;
 
-    transition:.2s;
+  transition:.2s;
 }
 
 button:hover{
 
-    transform:scale(1.02);
+  transform:scale(1.02);
 
-    background:#7c3aed;
+  background:#7c3aed;
+}
+
+.estado{
+
+  margin-top:15px;
+
+  text-align:center;
+
+  opacity:.8;
 }
 
 </style>
@@ -122,38 +144,83 @@ button:hover{
 
 <div class="contenedor">
 
-    <h1>✦ Dejá tu mensaje ✦</h1>
+  <h1>✦ Compartí tu mensaje ✦</h1>
 
-    <p>Tu texto aparecerá en la instalación.</p>
+  <p>
+    Tu mensaje aparecerá en la instalación.
+  </p>
 
-    <textarea
-        id="mensaje"
-        placeholder="Escribí algo..."
-    ></textarea>
+  <textarea
+    id="mensaje"
+    maxlength="200"
+    placeholder="Escribí aquí..."
+  ></textarea>
 
-    <button onclick="enviarMensaje()">
-        Enviar
-    </button>
+  <button onclick="enviarMensaje()">
+    Enviar mensaje
+  </button>
+
+  <div class="estado" id="estado"></div>
 
 </div>
 
-<script>
+<script type="module">
 
-function enviarMensaje(){
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    let mensaje =
-    document.getElementById("mensaje").value;
+import {
+  getDatabase,
+  ref,
+  push
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    if(mensaje.trim()==""){
+const firebaseConfig = {
 
-        alert("Escribí un mensaje");
+  apiKey: "AIzaSyAMEYd-JxrQMdsDHYTKSBzhyUg65jLJfLA",
+  authDomain: "visuales-66bce.firebaseapp.com",
+  databaseURL: "https://visuales-66bce-default-rtdb.firebaseio.com",
+  projectId: "visuales-66bce",
+  storageBucket: "visuales-66bce.firebasestorage.app",
+  messagingSenderId: "1075734290553",
+  appId: "1:1075734290553:web:924cc39197b00bcad534a8"
+};
 
-        return;
-    }
+const app = initializeApp(firebaseConfig);
 
-    alert("Mensaje enviado");
+const database = getDatabase(app);
 
-    document.getElementById("mensaje").value="";
+window.enviarMensaje = async function() {
+
+  let texto =
+    document.getElementById("mensaje").value.trim();
+
+  if(texto === "") return;
+
+  try {
+
+    await push(
+      ref(database, "mensajes"),
+      {
+        texto: texto,
+        fecha: Date.now()
+      }
+    );
+
+    document.getElementById("estado").innerHTML =
+      "✓ Mensaje enviado";
+
+    document.getElementById("mensaje").value = "";
+
+  }
+  catch(error){
+
+    document.getElementById("estado").innerHTML =
+      "Error al enviar";
+
+    console.log(error);
+  }
 }
 
 </script>
