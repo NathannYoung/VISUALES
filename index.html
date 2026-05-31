@@ -1,63 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Mensajes</title>
-</head>
-<body>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h2>Escribí un mensaje</h2>
+<title>Enviar Mensaje</title>
 
-<input type="text" id="mensaje">
-<button onclick="enviarMensaje()">Enviar</button>
+<style>
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getDatabase,
-  ref,
-  push
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAMEYd-JxrQMdsDHYTKSBzhyUg65jLJfLA",
-  authDomain: "visuales-66bce.firebaseapp.com",
-  databaseURL: "https://visuales-66bce-default-rtdb.firebaseio.com",
-  projectId: "visuales-66bce",
-  storageBucket: "visuales-66bce.firebasestorage.app",
-  messagingSenderId: "1075734290553",
-  appId: "1:1075734290553:web:924cc39197b00bcad534a8",
-  measurementId: "G-ZKXVXRHVXK"
-};
-
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-
-window.enviarMensaje = function() {
-
-  let texto = document.getElementById("mensaje").value;
-
-  if (texto.trim() === "") {
-    return;
-  }
-
-  push(
-    ref(database, "mensajes"),
-    {
-      texto: texto,
-      fecha: Date.now()
-    }
-  );
-
-  document.getElementById("mensaje").value = "";
-
-  alert("Mensaje enviado");
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-</script>
+body{
+    font-family:Arial, sans-serif;
+    height:100vh;
 
-</body>
-</html>
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #111827,
+        #1f2937,
+        #111827
+    );
+
+    color:white;
+}
+
+.contenedor{
+
+    width:90%;
+    max-width:500px;
+
+    padding:30px;
+
+    border-radius:25px;
+
+    backdrop-filter:blur(15px);
+
+    background:
+    rgba(255,255,255,0.08);
+
+    border:
+    1px solid rgba(255,255,255,0.15);
+
+    box-shadow:
+    0 20px 60px rgba(0,0,0,.4);
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:10px;
+
+    font-size:32px;
+}
+
+p{
+
+    text-align:center
